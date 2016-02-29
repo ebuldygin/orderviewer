@@ -1,0 +1,148 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:f="http://java.sun.com/jsf/core"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:p="http://primefaces.org/ui">
+    <h:head>
+        <title>Facelet Title</title>
+    </h:head>
+    <h:body>
+        <f:metadata>
+            <f:viewParam name="id" value="#{orderEdit.id}" />
+            <f:event type="preRenderView"
+                     listener="#{orderEdit.initConversation}" />
+        </f:metadata>
+        <h:form id="editOrderForm">
+
+            <p:messages id="messages" showDetail="true" />
+
+            <h:panelGrid id="orderEditPanel" columns="3">
+
+                <p:outputLabel for="orderId" value="Id" />
+                <p:outputLabel id="orderId" value="#{orderEdit.id ne null ? orderEdit.id : ''}" />
+                <p:message for="orderId" />
+
+                <p:outputLabel for="customerName" value="Customer name" />
+                <p:inputText id="customerName" value="#{orderEdit.instance.customerName}" />
+                <p:message for="customerName" />
+
+                <p:outputLabel for="customerAddress" value="Customer address" />
+                <p:inputText id="customerAddress" value="#{orderEdit.instance.address}" />
+                <p:message for="customerAddress" />
+
+                <p:outputLabel for="orderAmount" value="Order amount" />
+                <p:inputText id="orderAmount" value="#{orderEdit.instance.amount}">
+                    <f:convertNumber maxFractionDigits="2" maxIntegerDigits="19" 
+                                     groupingUsed="false" locale="en-US" />
+                    <f:validateDoubleRange minimum="0" />
+                </p:inputText>
+                <p:message for="orderAmount" />
+
+                <p:outputLabel for="orderDate" value="Order date" />
+                <p:calendar id="orderDate" value="#{orderEdit.instance.creationDate}" />
+                <p:message for="orderDate" />
+            </h:panelGrid>
+            <h:panelGrid columns="3">
+                <p:commandButton value="Save" action="#{orderEdit.save}" 
+                                 process="@this orderEditPanel" update="@parent orderEditPanel" />
+                <p:commandButton value="Cancel" action="#{orderEdit.cancel}"
+                                 process="@this" update="orderEditPanel"
+                                 immediate="true" />
+                <p:commandButton value="Delete" action="#{orderEdit.delete}" 
+                                 rendered="#{orderEdit.managed}" />
+                <p:commandButton value="Add item" action="#{orderItemEdit.setNewInstance(orderEdit.instance)}"
+                                 process="@this" update="editOrderItem"
+                                 rendered="#{orderEdit.managed}"
+                                 oncomplete="PF('editOrderItemDialog').show();" />
+            </h:panelGrid>
+            <p:dataTable id="itemsTable" var="item" value="#{orderEdit.instance.items}">
+                <p:column>
+                    <f:facet name="header">
+                        <h:outputText value="Item id" />
+                    </f:facet>
+                    <h:outputText value="#{item.id.itemId}" />
+                </p:column>
+                <p:column>
+                    <f:facet name="header">
+                        <h:outputText value="Item name" />
+                    </f:facet>
+                    <h:outputText value="#{item.name}" />
+                </p:column>
+                <p:column>
+                    <f:facet name="header">
+                        <h:outputText value="Serial number" />
+                    </f:facet>
+                    <h:outputText value="#{item.serialNumber}" />
+                </p:column>
+                <p:column>
+                    <f:facet name="header">
+                        <h:outputText value="Quantity" />
+                    </f:facet>
+                    <h:outputText value="#{item.quantity}" />
+                </p:column>
+                <p:column>
+                    <f:facet name="header">
+                        <h:outputText value="Actions" />
+                    </f:facet>
+                    <p:commandButton icon="ui-icon-pencil"
+                                     process="@this" update=":editOrderForm:editOrderItem"
+                                     oncomplete="PF('editOrderItemDialog').show();">
+                        <f:setPropertyActionListener value="#{item}" target="#{orderItemEdit.instance}" />
+                    </p:commandButton>
+                    <p:commandButton icon="ui-icon-trash"
+                                     onclick="return window.confirm('The item #{item.id.itemId} will be deleted. Are your sure?');"
+                                     action="#{orderItemEdit.delete}"
+                                     process="@this" update=":editOrderForm:itemsTable" >
+                        <f:setPropertyActionListener value="#{item}" target="#{orderItemEdit.instance}" />
+                    </p:commandButton>
+                </p:column>
+            </p:dataTable>
+
+            <p:dialog widgetVar="editOrderItemDialog" header="Edit" closable="false">
+                <p:outputPanel id="editOrderItem">
+                    <h:panelGrid id="editOrderItemPanel" columns="3" rendered="#{orderItemEdit.instance ne null}">
+
+                        <p:outputLabel for="editOrderItemId" value="Item id" />
+                        <p:inputText id="editOrderItemId" value="#{orderItemEdit.instance.id.itemId}" 
+                                     required="true">
+                            <f:validateLongRange minimum="1" />
+                        </p:inputText>
+                        <p:message for="editOrderItemId" />
+
+                        <p:outputLabel for="editOrderItemSerial" value="Serial number" />
+                        <p:inputText id="editOrderItemSerial" value="#{orderItemEdit.instance.serialNumber}" />
+                        <p:message for="editOrderItemSerial" />
+
+                        <p:outputLabel for="editOrderItemName" value="Item name" />
+                        <p:inputText id="editOrderItemName" value="#{orderItemEdit.instance.name}" />
+                        <p:message for="editOrderItemName" />
+
+                        <p:outputLabel for="editOrderItemQuantity" value="Quantity" />
+                        <p:inputText id="editOrderItemQuantity" value="#{orderItemEdit.instance.quantity}">
+                            <f:convertNumber integerOnly="true" />
+                            <f:validateLongRange minimum="1" />
+                        </p:inputText>
+                        <p:message for="editOrderItemQuantity" />
+
+                        <h:panelGrid columns="2">
+                            <p:commandButton value="Save" icon="ui-icon-disk"
+                                             action="#{orderItemEdit.save}"
+                                             process="editOrderItemPanel" 
+                                             update="itemsTable editOrderItemPanel messages" />
+                            <p:commandButton value="Cancel"
+                                             icon="ui-icon-cancel"
+                                             oncomplete="PF('editOrderItemDialog').hide();"
+                                             process="@none" update="messages"
+                                             immediate="true">
+                                <f:setPropertyActionListener value="#{null}" target="#{orderItemEdit.instance}" />
+                            </p:commandButton>
+                        </h:panelGrid>
+                    </h:panelGrid>
+                </p:outputPanel>
+            </p:dialog>
+        </h:form>
+    </h:body>
+</html>
+

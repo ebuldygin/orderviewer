@@ -1,0 +1,34 @@
+<?xml version="1.0"?>
+<faces-config version="2.0"
+              xmlns="http://java.sun.com/xml/ns/javaee"
+              xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
+              xsi:schemaLocation="http://java.sun.com/xml/ns/javaee http://java.sun.com/xml/ns/javaee/web-facesconfig_2.0.xsd">
+    <navigation-rule>
+        <from-view-id>/orderEdit.xhtml</from-view-id>
+        <navigation-case>
+            <from-outcome>saved</from-outcome>
+            <if>#{orderEdit.managed}</if>
+            <to-view-id>/orderList.xhtml</to-view-id>
+            <redirect />
+        </navigation-case>
+        <navigation-case>
+            <from-outcome>created</from-outcome>
+            <to-view-id>/orderEdit.xhtml</to-view-id>
+            <redirect include-view-params="true" />
+        </navigation-case>
+        <navigation-case>
+            <from-outcome>deleted</from-outcome>
+            <to-view-id>/orderList.xhtml</to-view-id>
+            <redirect />
+        </navigation-case>
+        <navigation-case>
+            <from-outcome>cancelled</from-outcome>
+            <to-view-id>/orderList.xhtml</to-view-id>
+            <redirect />
+        </navigation-case>
+        <navigation-case>
+            <to-view-id>/orderList.xhtml</to-view-id>
+            <redirect />
+        </navigation-case>
+    </navigation-rule>
+</faces-config>

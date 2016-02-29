@@ -1,0 +1,21 @@
+# eclipse project files
+.project
+.metadata
+.classpath
+.settings/
+.loadpath
+.externalToolBuilders/
+
+# idea project files
+*.iml
+*.ipr
+*.iws
+.idea/
+
+# build
+target/
+*/target/
+*/test/
+
+# gedit temp files
+*~

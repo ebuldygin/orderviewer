@@ -1,0 +1,5 @@
+Сервер приложений: GlassFish
+СУБД: Java DB (Apache Derby 10.9.1.0)
+Конфигурация источника данных: в классе resources.DataRepositoryConfig
+Скрипты для создания и заполнения таблиц: src/main/resources/sql/
+Параметры веб-сервиса для получения времени: config.properties

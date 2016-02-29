@@ -1,0 +1,119 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:f="http://java.sun.com/jsf/core"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:p="http://primefaces.org/ui">
+    <h:head>
+        <title>Facelet Title</title>
+    </h:head>
+    <h:body>
+        <f:metadata>
+            <f:event type="preRenderView"
+                     listener="#{orderList.initConversation}" />
+        </f:metadata>
+        <h:form id="ordersForm">
+
+            <p:remoteCommand name="deleteOrder" action="#{orderList.remove}" 
+                             process="@this" update="@form" />
+
+            <h:panelGrid id="timePanel" columns="2">
+                <p:outputLabel value="Report time: " />
+                <p:outputLabel value="#{orderList.reportDate}" rendered="#{orderList.reportDate ne null}">
+                    <f:convertDateTime pattern="dd.MM.yyyy HH:mm:ss" />
+                </p:outputLabel>
+                <p:outputLabel value="Date service not available" rendered="#{orderList.reportDate eq null}" 
+                               style="color: red" />
+                <p:commandButton value="Refresh" action="#{orderList.refreshData}" process="@this" update="@form" />
+                <p:button outcome="orderEdit.xhtml"
+                          value="Add order">
+                </p:button>
+            </h:panelGrid>
+            <p:dataTable id="ordersTable" var="order" value="#{orderList.orders}">
+                <p:column style="width: 16px">
+                    <p:rowToggler />
+                </p:column>
+                <p:column>
+                    <f:facet name="header">
+                        <h:outputText value="Id" />
+                    </f:facet>
+                    <h:outputText value="#{order.id}" />
+                </p:column>
+                <p:column>
+                    <f:facet name="header">
+                        <h:outputText value="Customer name" />
+                    </f:facet>
+                    <h:outputText value="#{order.customerName}" />
+                </p:column>
+                <p:column>
+                    <f:facet name="header">
+                        <h:outputText value="Creation date" />
+                    </f:facet>
+                    <h:outputText value="#{order.creationDate}">
+                        <f:convertDateTime pattern="dd.MM.yyyy" />
+                    </h:outputText>
+                </p:column>
+                <p:column>
+                    <f:facet name="header">
+                        <h:outputText value="Amount" />
+                    </f:facet>
+                    <h:outputText value="#{order.amount}" />
+                </p:column>
+                <p:column>
+                    <f:facet name="header">
+                        <h:outputText value="Customer address" />
+                    </f:facet>
+                    <h:outputText value="#{order.address}" />
+                </p:column>
+                <p:column>
+                    <f:facet name="header">
+                        <h:outputText value="Actions" />
+                    </f:facet>
+                    <p:button outcome="orderEdit.xhtml"
+                              icon="ui-icon-pencil">
+                        <f:param name="id" value="#{order.id}" />
+                    </p:button>
+                    <!-- реализация через js, т.к. при использовании обычного action 
+                    может происходить "раскрытие" ненужных строк при обработке 
+                    в apply requests фазе, что повлечёт к дополнительным запросам к БД.
+                    -->
+                    <p:commandButton icon="ui-icon-trash"
+                                     onclick='if (window.confirm("The order #{order.id} will be deleted. Are your sure?")) {
+                                                 deleteOrder([{name: "orderId", value: #{order.id}}]);
+                                             }
+                                             return false;' />
+                </p:column>
+
+                <p:rowExpansion rendererType="">
+                    <p:dataTable var="item" value="#{orderList.getOrderItems(order)}">
+                        <p:column>
+                            <f:facet name="header">
+                                <h:outputText value="Item id" />
+                            </f:facet>
+                            <h:outputText value="#{item.id.itemId}" />
+                        </p:column>
+                        <p:column>
+                            <f:facet name="header">
+                                <h:outputText value="Item name" />
+                            </f:facet>
+                            <h:outputText value="#{item.name}" />
+                        </p:column>
+                        <p:column>
+                            <f:facet name="header">
+                                <h:outputText value="Serial number" />
+                            </f:facet>
+                            <h:outputText value="#{item.serialNumber}" />
+                        </p:column>
+                        <p:column>
+                            <f:facet name="header">
+                                <h:outputText value="Quantity" />
+                            </f:facet>
+                            <h:outputText value="#{item.quantity}" />
+                        </p:column>
+                    </p:dataTable>
+                </p:rowExpansion>
+            </p:dataTable>
+        </h:form>
+    </h:body>
+</html>
