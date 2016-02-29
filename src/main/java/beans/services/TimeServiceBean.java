@@ -1,12 +1,13 @@
 package beans.services;
 
+import beans.view.OrderItemEditBean;
 import java.io.InputStream;
 import java.io.Serializable;
 import java.net.URL;
 import java.util.Date;
 import java.util.Properties;
+import java.util.logging.Level;
 import javax.xml.namespace.QName;
-import org.jboss.logging.Logger;
 import ws.client.TimeService;
 import ws.client.TimeService_Service;
 
@@ -30,7 +31,7 @@ public class TimeServiceBean implements Serializable {
                         prop.getProperty("timeservice.qname.localPart"));
             }
         } catch (Exception ex) {
-            Logger.getLogger(TimeServiceBean.class.getName()).log(Logger.Level.ERROR,
+            java.util.logging.Logger.getLogger(TimeServiceBean.class.getName()).log(Level.SEVERE,
                     "Error while applying TimeService properties", ex);
         }
         TIMESERVICE_WSDL_LOCATION = url;

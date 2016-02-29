@@ -9,12 +9,13 @@ import java.io.Serializable;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.enterprise.context.Conversation;
 import javax.enterprise.context.ConversationScoped;
 import javax.faces.context.FacesContext;
 import javax.inject.Inject;
 import javax.inject.Named;
-import org.jboss.logging.Logger;
 
 @Named("orderList")
 @ConversationScoped
@@ -42,7 +43,7 @@ public class OrderListBean implements Serializable {
         try {
             reportDate = timeServiceBean.requestDate();
         } catch (Exception ex) {
-            Logger.getLogger(getClass().getName()).log(Logger.Level.ERROR, "Time service error", ex);
+            Logger.getLogger(OrderListBean.class.getName()).log(Level.SEVERE, "Time service error", ex);
         }
     }
 

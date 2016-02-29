@@ -7,13 +7,13 @@ import entities.OrderItem;
 import entities.OrderItemPK;
 import java.io.Serializable;
 import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.enterprise.context.ConversationScoped;
-import javax.enterprise.inject.Instance;
 import javax.faces.application.FacesMessage;
 import javax.faces.context.FacesContext;
 import javax.inject.Inject;
 import javax.inject.Named;
-import org.jboss.logging.Logger;
 
 @Named("orderItemEdit")
 @ConversationScoped
@@ -80,7 +80,7 @@ public class OrderItemEditBean implements Serializable {
             FacesContext.getCurrentInstance().addMessage(null,
                     new FacesMessage(FacesMessage.SEVERITY_INFO, "Info", "Item saved"));
         } catch (Exception ex) {
-            Logger.getLogger(getClass().getName()).log(Logger.Level.ERROR,
+            Logger.getLogger(OrderItemEditBean.class.getName()).log(Level.SEVERE,
                     "Save OrderItem operation failed", ex);
             FacesContext.getCurrentInstance().addMessage(null,
                     new FacesMessage(FacesMessage.SEVERITY_ERROR, "Error", "Item not saved"));
@@ -94,7 +94,7 @@ public class OrderItemEditBean implements Serializable {
             FacesContext.getCurrentInstance().addMessage(null,
                     new FacesMessage(FacesMessage.SEVERITY_INFO, "", "Item deleted"));
         } catch (Exception ex) {
-            Logger.getLogger(getClass().getName()).log(Logger.Level.ERROR,
+            Logger.getLogger(OrderItemEditBean.class.getName()).log(Level.SEVERE,
                     "Delete item from the order operation failed", ex);
             FacesContext.getCurrentInstance().addMessage(null,
                     new FacesMessage(FacesMessage.SEVERITY_ERROR, "", "Item not deleted"));
